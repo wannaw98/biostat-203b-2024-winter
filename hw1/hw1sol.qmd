@@ -44,11 +44,13 @@ sessionInfo()
 
 **Answer:** I've down all steps for Q1
 
+
 ## Q2. Data ethics training
 
 This exercise (and later in this course) uses the [MIMIC-IV data v2.2](https://physionet.org/content/mimiciv/2.2/), a freely accessible critical care database developed by the MIT Lab for Computational Physiology. Follow the instructions at <https://mimic.mit.edu/docs/gettingstarted/> to (1) complete the CITI `Data or Specimens Only Research` course and (2) obtain the PhysioNet credential for using the MIMIC-IV data. Display the verification links to your completion report and completion certificate here. **You must complete Q2 before working on the remaining questions.** (Hint: The CITI training takes a few hours and the PhysioNet credentialing takes a couple days; do not leave it to the last minute.)
 
 **Answer:** I completed CITI training on 1/22/2024.The completion report is available at [here](https://www.citiprogram.org/verify/?k2a2f8315-5866-47d0-8df0-fb95cfebb781-60717611). The completioncertification is available at [here](https://www.citiprogram.org/verify/?w68e67626-ada6-4450-a404-240c8ae95ee4-60717611).
+
 
 ## Q3. Linux Shell Commands
 
@@ -64,6 +66,7 @@ Refer to the documentation <https://physionet.org/content/mimiciv/2.2/> for deta
 #| eval: true
 ls -l ~/mimic/
 ```
+
 
 2. Display the contents in the folders `hosp` and `icu` using Bash command `ls -l`. Why are these data files distributed as `.csv.gz` files instead of `.csv` (comma separated values) files? Read the page <https://mimic.mit.edu/docs/iv/> to understand what's in each folder.
 ```{bash}
@@ -90,9 +93,10 @@ ls -l ~/mimic/icu
 
 `zgrep` allows us to search inside compressed files. It's useful for searching for patterns or strings without decompressing the file.
 
+
 4. (Looping in Bash) What's the output of the following bash script?
 ```{bash}
-#| eval: false
+#| eval: True
 for datafile in ~/mimic/hosp/{a,l,pa}*.gz
 do
   ls -l $datafile
@@ -105,22 +109,96 @@ done
 Display the number of lines in each data file using a similar loop. (Hint: combine linux commands `zcat <` and `wc -l`.)
 
 ```{bash}
-#| eval: false
+#| eval: True
 for datafile in ~/mimic/hosp/{a,l,pa}*.gz
 do
   echo $datafile
-  zcat $datafile | wc -l
+  zcat < $datafile | wc -l
 done
 ```
 
 **Answer:** `echo` has been used here to show the file name and path. `zcat` was used to decompress the file and pipe the output to `wc -l`, which counts the number of lines.
 
+
 5. Display the first few lines of `admissions.csv.gz`. How many rows are in this data file? How many unique patients (identified by `subject_id`) are in this data file? Do they match the number of patients listed in the `patients.csv.gz` file? (Hint: combine Linux commands `zcat <`, `head`/`tail`, `awk`, `sort`, `uniq`, `wc`, and so on.)
+
+**Answer:**The following code displayed the first 7 lines of `admissions.csv.gz`.
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz | head -7
+
+```
+
+**Answer:** The first row of the datafile is the variable name, so I will skip the first line and start from the second line. By running the code below, we can see there are 431,231 rows in this datafile.
+
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz | tail -n +2 | wc -l
+
+```
+
+**Answer:**Based on what we've down, we can tell that subject_id is at the first column. By running the code, we can tell there are 180, 733 unique patients.
+
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz |tail -n +2 \
+|cut -d ',' -f 1| sort | uniq | wc -l
+
+```
+
+**Answer:**For `patients.csv.gz` file,  we found that the first line is still the variable name, so we still skip the first row and start counting from the second line. The result give me 299,712 patients in total. Thus, they do not match.
+```{bash}
+zcat ~/mimic/hosp/patients.csv.gz |tail -n +2 | wc -l
+```
 
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on; skip the header line.)
 
+**Answer:**`Admission_type`is in column 6.
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz |\
+awk -F, 'NR > 1 {print $6}'| sort| uniq -c
+```
+
+`Admission_location` is in column 8
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz |\
+awk -F, 'NR > 1 {print $8}'| sort| uniq -c
+```
+
+`insurance` is in column 10
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz |\
+awk -F, 'NR > 1 {print $10}'| sort| uniq -c
+```
+
+`race` is in column 13
+```{bash}
+zcat ~/mimic/hosp/admissions.csv.gz |\
+awk -F, 'NR > 1 {print $13}'| sort| uniq -c
+```
+
+
 7. _To compress, or not to compress. That's the question._ Let's focus on the big data file `labevents.csv.gz`. Compare compressed gz file size to the uncompressed file size. Compare the run times of `zcat < ~/mimic/labevents.csv.gz | wc -l` versus `wc -l labevents.csv`. Discuss the trade off between storage and speed for big data files. (Hint: `gzip -dk < FILENAME.gz > ./FILENAME`. Remember to delete the large `labevents.csv` file after the exercise.)
+
+**Answer:** By running the code below, we can tell that the compressed file size is 1.9G, the uncompressed file size is 19G.
+
+```{bash}
+ls -lh ~/mimic/hosp/labevents.csv.gz
+gzip -dk ~/mimic/hosp/labevents.csv.gz
+ls -lh ~/mimic/hosp/labevents.csv
+```
+
+**Answer:**By running the code, we can tell that the operation involving the compressed file is faster than the operation on the uncompressed file.
+
+```{bash}
+time zcat ~/mimic/hosp/labevents.csv.gz | wc -l
+time wc -l ~/mimic/hosp/labevents.csv
+```
+```{bash}
+rm ~/mimic/hosp/labevents.csv
+```
+
+**Answer:** The compressed file takes up less space and, in this case, is quicker for read operations because less data has to be read from the disk.The uncompressed file, although immediately accessible without the need to decompress, is larger and takes longer to read from the disk. 
+Storing large amounts of data can be expensive, especially on high-speed storage devices. Compressed files take up less space and can reduce costs, particularly when using cloud storage services where pricing is based on the amount of storage used. However, compression increases CPU load, which can slow down other processes if resources are limited. For systems with limited processing power, this can be a significant drawback. In conclusion, the choice between using compressed or uncompressed data formats depends on the specific use case. 
+
 
 ## Q4. Who's popular in Price and Prejudice
 
@@ -129,16 +207,26 @@ done
 #| eval: false
 wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
 ```
-Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git. Complete the following loop to tabulate the number of times each of the four characters is mentioned using Linux commands.
+Explain what `wget -nc` does. Do **not** put this text file `pg42671.txt` in Git. 
+
+**Answer:** `wget` is a utility for non-interactive downloading of files from the web. `-nc` option in `wget` indicates that if a file is already present, `wget -nc` will prevent a new version of the file from replacing the existing file. Instead, it will keep the vesion it downloaded first.
+
+
+Complete the following loop to tabulate the number of times each of the four characters is mentioned using Linux commands.
 ```{bash}
-#| eval: false
+#| eval: True
 wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
 for char in Elizabeth Jane Lydia Darcy
 do
   echo $char:
-  # some bash commands here
+  grep -o -i $char pg42671.txt| wc -l
 done
 ```
+
+**Answer:** Ignoring the upper- and lowercase using `-i` option, 
+Elizabeth was mentioned 634 times, Jane was metioned  293 times, 
+Lydia was mentioned 171 times, and Darcy was mentioned 418 times.
+Thus, Elizabeth was the most mentioned.
 
 2. What's the difference between the following two commands?
 ```{bash}
@@ -151,6 +239,10 @@ and
 echo 'hello, world' >> test2.txt
 ```
 
+**Answer:** For the first command, `echo 'hello, world' > test1.txt` will
+create `text1.txt` if it doesn't exist or overwrite it if it does, with the content `hello, world`. While, for the second command, the new content `hello, world` will be added to the end of the `text2.txt` without altering the existing contents if the file exists, or create it with `hello, world` if it doesn't.
+
+
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
 ```{bash eval=FALSE}
 #!/bin/sh
@@ -158,16 +250,107 @@ echo 'hello, world' >> test2.txt
 # Usage: bash middle.sh filename end_line num_lines
 head -n "$2" "$1" | tail -n "$3"
 ```
+
+**Answer:** I've uploaded `middle.sh` to the Git.
+
+
 Using `chmod` to make the file executable by the owner, and run
 ```{bash}
-#| eval: false
+#| eval: true
+chmod u+x  middle.sh
 ./middle.sh pg42671.txt 20 5
+
 ```
+**Answer:** The above code would print the 16th line to the 
+20th line in pg42671.txt.
+
+
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+
+**Answer:**`"$1"` is the pg42671.txt, which is the filename.
+`"$2"` is 20, which is the endline.
+`"$3"` is 5, which is the number of lines.
+We need the first line of the shell script because it specifies the interpreter that should be used to execute the script.
 
 ## Q5. More fun with Linux
 
 Try following commands in Bash and interpret the results: `cal`, `cal 2024`, `cal 9 1752` (anything unusual?), `date`, `hostname`, `arch`, `uname -a`, `uptime`, `who am i`, `who`, `w`, `id`, `last | head`, `echo {con,pre}{sent,fer}{s,ed}`, `time sleep 5`, `history | tail`.
+
+```{bash}
+cal
+cal 2024
+cal 9 1752
+```
+**Answer:**`cal` shows the calendar for the current month, which is January. `cal 2024` shows the calendar for this year, 2024.
+`cal 9 1752` prints the calendar for September in 1752. It's kind of unusual since several days (from 03/9/1752 to 13/9/1752 ) were missing.This is due to the adoption of the Gregorian calendar, which replaced the Julian calendar to correct a discrepancy between the calendar year and the solar year.
+
+```{bash}
+date
+hostname
+arch
+uname -a
+uptime
+```
+
+**Answer:**`date` shows the current date and time in PST.
+`hostname` display the system's network name.
+`arch` shows the architecture of the machine.
+`uname -a` prints a list of system information. 
+`uptime` shows the running time, number of users, and the average system load.
+
+```{bash}
+whoami
+```
+
+```{bash}
+who
+```
+```{bash}
+w
+```
+```{bash}
+id
+```
+
+**Answer:**`whoami` shows who you are logged in as
+`who` lists the users currently logged into the system.
+`w` displays who is logged in and the things they are doing, also with CPU time.
+`id` shows the group and user IDs for the current user.
+
+
+```{bash}
+last | head
+```
+
+```{bash}
+echo {con,pre}{sent,fer}{s,ed}
+```
+
+```{bash}
+time sleep 5
+```
+
+```{bash}
+history | tail
+
+#   57  git checkout develop
+#   58  git pull origin develop
+#   59  ls
+#   60  cd ~/hw1
+#   61  cd hw1/
+#   62  ls
+#   63  git add hw1sol.html hw1sol.qmd
+#   64  git add hw1sol.qmd
+#   65  history
+#   66  history|tail
+```
+
+**Answer:**`las|head` lists the last logins of users and system boots, typically 10, but it depends.
+`echo {con,pre}{sent,fer}{s,ed}` will generate all possible combinations of the parts enclosed in braces.
+`time sleep 5` measures how long it takes to execute `sleep 5`, which pauses for 5 seconds.
+`history|tail` should be able to list the last 10 commands that you have entered. However, nothing were shown for this command. Above are the outputs If I run this command in terminal.
+
+
 
 ## Q6. Book
 
@@ -178,3 +361,7 @@ Try following commands in Bash and interpret the results: `cal`, `cal 2024`, `ca
 The point of this exercise is (1) to get the book for free and (2) to see an example how a complicated project such as a book can be organized in a reproducible way.
 
 For grading purpose, include a screenshot of Section 4.1.5 of the book here.
+
+**Answer:** I was able to build `epub_book`, section 4.1.5 is available
+at [here](http://localhost:8787/files/Rep-Res-Book/rep-res-3rd-edition/_book/DirectoriesChapter.html#spaces-in-directory-and-file-names). Also, the screenshot is attached [here](https://docs.google.com/drawings/d/1uZr5DCCp-1YdZsG4bVVBikUys6EoteCU2rtTFZDy-bg/edit).
+
