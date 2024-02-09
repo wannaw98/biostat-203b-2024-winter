@@ -3115,7 +3115,7 @@ loaded via a namespace (and not attached):
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>memuse<span class="sc">::</span><span class="fu">Sys.meminfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Totalram:  7.434 GiB 
-Freeram:   6.225 GiB </code></pre>
+Freeram:   5.264 GiB </code></pre>
 </div>
 </div>
 <p>In this exercise, we explore various tools for ingesting the <a href="https://mimic.mit.edu/docs/iv/">MIMIC-IV</a> data introduced in <a href="https://ucla-biostat-203b.github.io/2024winter/hw/hw1/hw1.html">homework 1</a>.</p>
@@ -3176,7 +3176,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  rbase <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">str_c</span>(mimic_path, <span class="st">&quot;/hosp/admissions.csv.gz&quot;</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  5.099   0.170   5.527 </code></pre>
+  5.149   0.099   5.359 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pryr<span class="sc">::</span><span class="fu">object_size</span>(rbase) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3186,7 +3186,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  rtidyv <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">str_c</span>(mimic_path, <span class="st">&quot;/hosp/admissions.csv.gz&quot;</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  1.272   0.170   0.896 </code></pre>
+  1.191   0.249   0.984 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pryr<span class="sc">::</span><span class="fu">object_size</span>(rtidyv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3196,7 +3196,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  rfread <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="fu">str_c</span>(mimic_path, <span class="st">&quot;/hosp/admissions.csv.gz&quot;</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  1.764   0.022   0.623 </code></pre>
+  1.681   0.080   0.639 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pryr<span class="sc">::</span><span class="fu">object_size</span>(rfread)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3319,7 +3319,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">hospital_expire_flag =</span> <span class="fu">col_double</span>())))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  1.308   0.248   0.965 </code></pre>
+  1.186   0.194   0.836 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pryr<span class="sc">::</span><span class="fu">object_size</span>(rtidyv_col)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -3424,7 +3424,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  lab_filter <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(filter_path))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
- 34.907   2.291   8.314 </code></pre>
+ 33.512   2.334   8.203 </code></pre>
 </div>
 </div>
 </section>
@@ -3449,7 +3449,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
- 23.480   7.252  20.921 </code></pre>
+ 23.981   5.048  21.335 </code></pre>
 </div>
 </div>
 <p><strong>Answer:</strong> By running the code above, the time to run the whole process is shown above, including ingest, select and filter. There are 24,855,909 rows, and the first 10 lines are shown below. The results matched those in Q2.3.</p>
@@ -3506,7 +3506,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
- 13.992   4.883   3.809 </code></pre>
+ 13.933   4.828   3.775 </code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
@@ -3548,7 +3548,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>    arrow<span class="sc">::</span><span class="fu">to_duckdb</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-  0.522   0.120   0.578 </code></pre>
+  0.496   0.149   0.573 </code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
@@ -3560,7 +3560,7 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
- 45.592  29.976   8.599 </code></pre>
+ 46.114  31.954   8.980 </code></pre>
 </div>
 </div>
 <p><strong>Answer:</strong> The time to run the whole process would be add the two elapsed time above together. The number of rows and the first 10 lines are the same as those in Q2.3.</p>
@@ -3637,9 +3637,10 @@ Freeram:   6.225 GiB </code></pre>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>chartevents_vital <span class="ot">&lt;-</span> <span class="fu">open_dataset</span>(<span class="st">&quot;chartevents.csv&quot;</span>, <span class="at">format =</span> <span class="st">&quot;csv&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject_id, itemid, charttime, valuenum) <span class="sc">%&gt;%</span></span>
 <span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(itemid <span class="sc">%in%</span> item_ids_chart) <span class="sc">%&gt;%</span></span>
-<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
-<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>num_rows_chart <span class="ot">&lt;-</span> <span class="fu">nrow</span>(chartevents_vital)</span>
-<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(num_rows_chart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(subject_id, charttime) <span class="sc">%&gt;%</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>num_rows_chart <span class="ot">&lt;-</span> <span class="fu">nrow</span>(chartevents_vital)</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(num_rows_chart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 22502319</code></pre>
 </div>
@@ -3649,16 +3650,16 @@ Freeram:   6.225 GiB </code></pre>
 <pre><code># A tibble: 10 × 4
    subject_id itemid charttime           valuenum
         &lt;int&gt;  &lt;int&gt; &lt;dttm&gt;                 &lt;dbl&gt;
- 1   10002428 220045 2156-05-12 02:00:00     97  
- 2   10002428 220210 2156-05-12 02:00:00     25  
- 3   10002428 220045 2156-05-12 03:00:00     95  
- 4   10002428 220210 2156-05-12 03:00:00     18  
- 5   10002428 220045 2156-05-12 04:00:00     87  
- 6   10002428 220210 2156-05-12 04:00:00     20  
- 7   10002428 220045 2156-05-12 05:00:00     93  
- 8   10002428 220210 2156-05-12 05:00:00     21  
- 9   10002428 223761 2156-05-12 05:00:00     99.2
-10   10002428 220045 2156-05-12 06:00:00    101  </code></pre>
+ 1   10000032 223761 2180-07-23 07:00:00     98.7
+ 2   10000032 220179 2180-07-23 07:11:00     84  
+ 3   10000032 220181 2180-07-23 07:11:00     56  
+ 4   10000032 220045 2180-07-23 07:12:00     91  
+ 5   10000032 220210 2180-07-23 07:12:00     24  
+ 6   10000032 220045 2180-07-23 07:30:00     93  
+ 7   10000032 220179 2180-07-23 07:30:00     95  
+ 8   10000032 220181 2180-07-23 07:30:00     67  
+ 9   10000032 220210 2180-07-23 07:30:00     21  
+10   10000032 220045 2180-07-23 08:00:00     94  </code></pre>
 </div>
 </div>
 </section>
