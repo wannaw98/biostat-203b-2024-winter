@@ -272,7 +272,7 @@ understand, no matter what language they speak.
 </p>
 
 Re-write the csv file `labevents.csv` in the binary Parquet format (Hint: [`arrow::write_dataset`](https://arrow.apache.org/docs/r/reference/write_dataset.html).) How large is the Parquet file(s)? How long does the ingest+select+filter process of the Parquet file(s) take? Display the number of rows and the first 10 rows of the result tibble and make sure they match those in Q2.3. (Hint: use `dplyr` verbs for selecting columns and filtering rows.)
-```{r}
+```{r, eval=FALSE}
 labevents_arrow <- arrow::open_dataset("labevents.csv", format = "csv")
 arrow::write_dataset (labevents_arrow, "labevents.parquet")
 ```
