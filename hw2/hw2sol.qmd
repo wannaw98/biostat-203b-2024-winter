@@ -206,11 +206,11 @@ Display the first 10 lines of the new file `labevents_filtered.csv.gz`. How many
 
 
 ```{bash}
-zcat  labevents_filtered.csv.gz | head -10
+zcat  labevents_filtered.csv.gz | head -11
 ```
 **Answer:** The code above show the first 10 lines of the new file.
-Bt running the code below, we can tell there are 731,106 rows in this file
-excluding the first line. It takes around 0.2 seconds to read.
+Bt running the code below, we can tell there are 24,855,909 rows in this file
+excluding the first line. It takes around 6 seconds to read.
 ```{bash}
 zcat  labevents_filtered.csv.gz | tail -n +2 | wc -l
 ```
@@ -229,9 +229,41 @@ system.time(
 
 Our second strategy is to use [Apache Arrow](https://arrow.apache.org/) for larger-than-memory data analytics. Unfortunately Arrow does not work with gz files directly. First decompress `labevents.csv.gz` to `labevents.csv` and put it in the current working directory. To save render time, put `#| eval: false` at the beginning of this code chunk.
 
+```{bash}
+#| eval: false
+cd ~/mimic/hosp
+gzip -cd labevents.csv.gz > ~/203b-lecture/203b-hw/hw2/labevents.csv
+
+```
 Then use [`arrow::open_dataset`](https://arrow.apache.org/docs/r/reference/open_dataset.html) to ingest `labevents.csv`, select columns, and filter `itemid` as in Q2.3. How long does the ingest+select+filter process take? Display the number of rows and the first 10 rows of the result tibble, and make sure they match those in Q2.3. (Hint: use `dplyr` verbs for selecting columns and filtering rows.)
+```{r}
+file_path <- "labevents.csv"
+item_ids <- c(50912, 50971, 50983, 50902, 50882, 51221, 51301, 50931)
+system.time((
+  labevents_arrow <- arrow::open_dataset(file_path, format = "csv") %>%
+    select(subject_id, itemid, charttime, valuenum) %>%
+    filter(itemid %in% item_ids) %>%
+    collect()))
+```
+**Answer:** By running the code above, the time to run the whole process is 
+shown above, including ingest, select and filter. There are 24,855,909 rows, 
+and the first 10 lines are shown below. The results matched those in Q2.3.
+
+```{r}
+num_rows <- nrow(labevents_arrow)
+print(num_rows)
+first_10_rows <- head(labevents_arrow, 10)
+print(first_10_rows)
+
+```
 
 Write a few sentences to explain what is Apache Arrow. Imagine you want to explain it to a layman in an elevator. 
+
+**Answer:** Apache Arrow is like a universal language for data. It allows
+data to be shared and translated by different systems and software without
+translation, making data processing much faster and more efficient. You can
+imagine that it's like there is a book written in a language that everyone can 
+understand, no matter what language they speak.
 
 ### Q2.5 Compress `labevents.csv` to Parquet format and ingest/select/filter
 
@@ -240,8 +272,43 @@ Write a few sentences to explain what is Apache Arrow. Imagine you want to expla
 </p>
 
 Re-write the csv file `labevents.csv` in the binary Parquet format (Hint: [`arrow::write_dataset`](https://arrow.apache.org/docs/r/reference/write_dataset.html).) How large is the Parquet file(s)? How long does the ingest+select+filter process of the Parquet file(s) take? Display the number of rows and the first 10 rows of the result tibble and make sure they match those in Q2.3. (Hint: use `dplyr` verbs for selecting columns and filtering rows.)
+```{r}
+labevents_arrow <- arrow::open_dataset("labevents.csv", format = "csv")
+arrow::write_dataset (labevents_arrow, "labevents.parquet")
+```
+
+```{r}
+file_size <- file.info("labevents.parquet")$size
+print(file_size)
+```
+**Answer:** The file size is 4096 bytes.By running the code below, we can tell
+the time for the whole process. The number of rows and the first 10 lines
+are the same as those in Q2.3.
+
+```{r}
+system.time(
+  labevents_parquet <- arrow::open_dataset("labevents.parquet") %>%
+    select(subject_id, itemid, charttime, valuenum) %>%
+    filter(itemid %in% item_ids) %>%
+    collect())
+
+```
+```{r}
+num_rows_parquet <- nrow(labevents_parquet)
+print(num_rows_parquet)
+first_10_rows_parquet <- head(labevents_parquet, 10)
+print(first_10_rows_parquet)
+
+```
 
 Write a few sentences to explain what is the Parquet format. Imagine you want to explain it to a layman in an elevator.
+
+**Answer:** The Parquet format is a type of data storage format that is highly 
+efficient for storing and processing large amounts of data. It's like you have 
+an amazing organizer that not only arranges everything you have in order but 
+also compresses them so they take up less space, without losing any content. 
+When you need to find something, it shows you only the key words, which saves 
+you time and space, making it an excellent choice for working with big data.
 
 ### Q2.6 DuckDB
 
@@ -251,7 +318,39 @@ Write a few sentences to explain what is the Parquet format. Imagine you want to
 
 Ingest the Parquet file, convert it to a DuckDB table by [`arrow::to_duckdb`](https://arrow.apache.org/docs/r/reference/to_duckdb.html), select columns, and filter rows as in Q2.5. How long does the ingest+convert+select+filter process take? Display the number of rows and the first 10 rows of the result tibble and make sure they match those in Q2.3. (Hint: use `dplyr` verbs for selecting columns and filtering rows.)
 
+```{r}
+system.time(
+  labevents_duckdb <- arrow::open_dataset("labevents.parquet") %>%
+    arrow::to_duckdb())
+```
+```{r}
+system.time(
+  labevents_duckdb <- labevents_duckdb %>%
+    select(subject_id, itemid, charttime, valuenum) %>%
+    filter(itemid %in% item_ids) %>%
+    arrange(subject_id, charttime) %>%
+    collect())
+
+
+```
+**Answer:** The time to run the whole process would be add the two elapsed time
+above together. The number of rows and the first 10 lines
+are the same as those in Q2.3.
+
+```{r}
+num_rows_duckdb <- nrow(labevents_duckdb)
+print(num_rows_duckdb)
+first_10_rows_duckdb <- head(labevents_duckdb, 10)
+print(first_10_rows_duckdb)
+
+```
 Write a few sentences to explain what is DuckDB. Imagine you want to explain it to a layman in an elevator.
+
+**Answer:** DuckDB is an in-process SQL OLAP (Online Analytical Processing) 
+database management system. It helps quickly analyze large amounts of data 
+right where it is stored without the need for a separate server or 
+complex infrastructure. It's quite fast and efficient, making it a great tool 
+for data scientists.
 
 ## Q3. Ingest and filter `chartevents.csv.gz`
 
@@ -265,4 +364,26 @@ zcat < ~/mimic/icu/d_items.csv.gz | head -10
 ```
 In later exercises, we are interested in the vitals for ICU patients: heart rate (220045), mean non-invasive blood pressure (220181), systolic non-invasive blood pressure (220179), body temperature in Fahrenheit (223761), and respiratory rate (220210). Retrieve a subset of `chartevents.csv.gz` only containing these items, using the favorite method you learnt in Q2. 
 
+```{bash}
+#| eval: false
+cd  ~/mimic/icu
+gzip -cd chartevents.csv.gz > ~/203b-lecture/203b-hw/hw2/chartevents.csv
+
+```
+
 Document the steps and show code. Display the number of rows and the first 10 rows of the result tibble.
+
+```{r}
+
+item_ids_chart <- c(220045, 220181, 220179, 223761, 220210)
+chartevents_vital <- open_dataset("chartevents.csv", format = "csv") %>%
+  select(subject_id, itemid, charttime, valuenum) %>%
+  filter(itemid %in% item_ids_chart) %>%
+  collect()
+num_rows_chart <- nrow(chartevents_vital)
+print(num_rows_chart)
+first_10_rows_chart <- head(chartevents_vital, 10)
+print(first_10_rows_chart)
+
+```
+
