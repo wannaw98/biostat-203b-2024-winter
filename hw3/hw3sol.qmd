@@ -245,9 +245,7 @@ zcat < ~/mimic/icu/icustays.csv.gz | head
 Import `icustays.csv.gz` as a tibble `icustays_tble`. 
 
 ```{r}
-icustays_tble <- read_csv("~/mimic/icu/icustays.csv.gz", 
-                           show_col_types = FALSE)
-print(icustays_tble, width = Inf)
+icustays_tble <- read_csv("~/mimic/icu/icustays.csv.gz")
 ```
 
 
@@ -333,7 +331,7 @@ ggplot(admissions_tble) +
        y = "Count")
 ```
 - admission minute (anything unusual?)
-```{r, message=FALSE}
+```{r}
 admissions_tble <- admissions_tble %>%
   mutate("admit_min" = minute((admittime)))
 
@@ -348,7 +346,7 @@ ggplot(admissions_tble) +
 due to the rounding.
 
 - length of hospital stay (from admission to discharge) (anything unusual?)
-```{r, message=FALSE}
+```{r}
 admissions_tble <- admissions_tble %>%
   mutate("length_stay" = round(as.numeric(difftime(admissions_tble$dischtime,
                                   admissions_tble$admittime, 
@@ -429,7 +427,7 @@ zcat < ~/mimic/hosp/d_labitems.csv.gz | head
 
 We are interested in the lab measurements of creatinine (50912), potassium (50971), sodium (50983), chloride (50902), bicarbonate (50882), hematocrit (51221), white blood cell count (51301), and glucose (50931). Retrieve a subset of `labevents.csv.gz` that only containing these items for the patients in `icustays_tble`. Further restrict to the last available measurement (by `storetime`) before the ICU stay. The final `labevents_tble` should have one row per ICU stay and columns for each lab measurement.
 
-![](https://github.com/ucla-biostat-203b/2024winter/blob/main/hw/hw3/chartevents_tble.png?raw=true)
+![](https://github.com/ucla-biostat-203b/2024winter/blob/main/hw/hw3/labevents_tble.png?raw=true)
 
 Hint: Use the Parquet format you generated in Homework 2. For reproducibility, make `labevents_pq` folder available at the current working directory `hw3`, for example, by a symbolic link.
 
@@ -519,7 +517,6 @@ chartevents_vital <- chartevents_vital %>%
   arrange(charttime, .by_group = TRUE) %>%
   slice_head(n = 1)
 ```
-
 
 ```{r}
 chartevents_final <- chartevents_vital %>%
@@ -644,7 +641,7 @@ mimic_icu_cohort <- mimic_icu_cohort %>%
   mutate(across(.cols = 38:42, .fns = as.numeric))
 
 long_data_vital <- mimic_icu_cohort %>%
-  pivot_longer(cols = starts_with("numeric_"), names_to = "variable", 
+  pivot_longer(cols = 38:42, names_to = "variable", 
                values_to = "value")
 
 ggplot(long_data_vital, aes(x = los)) +
