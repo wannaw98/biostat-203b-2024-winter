@@ -379,7 +379,6 @@ item_ids_chart <- c(220045, 220181, 220179, 223761, 220210)
 chartevents_vital <- open_dataset("chartevents.csv", format = "csv") %>%
   select(subject_id, itemid, charttime, valuenum) %>%
   filter(itemid %in% item_ids_chart) %>%
-  arrange(subject_id, charttime) %>%
   collect()
 num_rows_chart <- nrow(chartevents_vital)
 print(num_rows_chart)
