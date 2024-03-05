@@ -1,7 +1,7 @@
 ---
 title: "Biostat 203B Homework 4"
 subtitle: "Due Mar 8 @ 11:59PM"
-author: "Your Name and UID"
+author: "Yue Wang UID: 005704481"
 format:
   html:
     theme: cosmo
@@ -43,7 +43,7 @@ Below is an outline of steps. In this homework, we exclusively work with the Big
 Authenticate with BigQuery using the service account token. Please place the service account token (shared via BruinLearn) in the working directory (same folder as your qmd file). Do **not** add this token to your git repository.
 ```{r}
 # path to the service account token 
-satoken <- "biostat-203b-2024-winter-313290ce47a6.json"
+satoken <- "~/203b-lecture/203b-hw/hw4/biostat-203b-2024-winter-313290ce47a6.json"
 # BigQuery authentication using service account
 bq_auth(path = satoken)
 ```
@@ -76,32 +76,64 @@ icustays_tble <- tbl(con_bq, "icustays") |>
 
 Connect to the `admissions` table.
 ```{r}
-# # TODO
-# admissions_tble <- 
+# full admissions table
+admission_tble <- tbl(con_bq, "admissions") |>
+  # show_query() |>
+  print(width = Inf)
 ```
 
 ### Q1.4 `patients` data
 
 Connect to the `patients` table.
 ```{r}
-# # TODO
-# patients_tble <-
+# full patients table
+patients_tble <- tbl(con_bq, "patients") |>
+  # show_query() |>
+  print(width = Inf)
 ```
 
 ### Q1.5 `labevents` data
 
 Connect to the `labevents` table and retrieve a subset that only contain subjects who appear in `icustays_tble` and the lab items listed in HW3. Only keep the last lab measurements before the ICU stay and pivot lab items to become variables/columns. Write all steps in _one_ chain of pipes.
 ```{r}
-# # TODO
-# labevents_tble <- 
+labevents_tble <- tbl(con_bq, "labevents") %>%
+  select(subject_id, storetime, valuenum, itemid) %>%
+  semi_join(icustays_tble, by = c("subject_id")) %>%
+  filter(itemid %in% c(
+    50912, 50971, 50983, 50902, 51221, 50882, 51301, 50931)) %>%
+  left_join(select(icustays_tble, subject_id, stay_id, intime), 
+            by = "subject_id") %>%
+  filter(storetime <= intime) %>%
+  group_by(subject_id, stay_id, itemid) %>%
+  slice_max(order_by = storetime, n = 1) %>%
+  ungroup() %>%
+  select(-storetime, -intime) %>%
+  pivot_wider(names_from = itemid, values_from = valuenum) %>%
+  print(width = Inf)
+  
 ```
 
 ### Q1.6 `chartevents` data
 
 Connect to `chartevents` table and retrieve a subset that only contain subjects who appear in `icustays_tble` and the chart events listed in HW3. Only keep the first chart events during ICU stay and pivot chart events to become variables/columns. Write all steps in _one_ chain of pipes.
 ```{r}
-# # TODO
-# chartevents_tble <- 
+
+labevents_tble <- tbl(con_bq, "labevents") %>%
+  select(subject_id, storetime, valuenum, itemid) %>%
+  semi_join(icustays_tble, by = c("subject_id")) %>%
+  filter(itemid %in% c(
+    50912, 50971, 50983, 50902, 51221, 50882, 51301, 50931)) %>%
+  left_join(select(icustays_tble, subject_id, stay_id, intime), 
+            by = "subject_id") %>%
+  filter(storetime <= intime) %>%
+  group_by(subject_id, stay_id, itemid) %>%
+  slice_max(order_by = storetime, n = 1) %>%
+  ungroup() %>%
+  select(-storetime, -intime) %>%
+  pivot_wider(names_from = itemid, values_from = valuenum) %>%
+  print(width = Inf)
+  
+```
 ```
 
 ### Q1.7 Put things together
