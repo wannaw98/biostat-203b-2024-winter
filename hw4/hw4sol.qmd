@@ -117,32 +117,37 @@ labevents_tble <- tbl(con_bq, "labevents") %>%
 
 Connect to `chartevents` table and retrieve a subset that only contain subjects who appear in `icustays_tble` and the chart events listed in HW3. Only keep the first chart events during ICU stay and pivot chart events to become variables/columns. Write all steps in _one_ chain of pipes.
 ```{r}
-
-labevents_tble <- tbl(con_bq, "labevents") %>%
-  select(subject_id, storetime, valuenum, itemid) %>%
+chartevents_tble <- tbl(con_bq, "chartevents") %>%
+  select(subject_id, charttime, value, itemid) %>%
   semi_join(icustays_tble, by = c("subject_id")) %>%
   filter(itemid %in% c(
-    50912, 50971, 50983, 50902, 51221, 50882, 51301, 50931)) %>%
-  left_join(select(icustays_tble, subject_id, stay_id, intime), 
-            by = "subject_id") %>%
-  filter(storetime <= intime) %>%
+    220045, 220179, 220180, 223761, 220210)) %>%
+  left_join(select(icustays_tble, subject_id, stay_id, intime, outtime), 
+            by = "subject_id")%>%
+  filter(charttime >= intime & charttime <= outtime) %>%
   group_by(subject_id, stay_id, itemid) %>%
-  slice_max(order_by = storetime, n = 1) %>%
+  slice_min(order_by = charttime, n = 1) %>%
   ungroup() %>%
-  select(-storetime, -intime) %>%
-  pivot_wider(names_from = itemid, values_from = valuenum) %>%
+  select(-charttime, -intime, -outtime) %>%
+  pivot_wider(names_from = itemid, values_from = value) %>%
   print(width = Inf)
   
 ```
-```
+
 
 ### Q1.7 Put things together
 
 This step is similar to Q7 of HW3. Using _one_ chain of pipes `|>` to perform following data wrangling steps: (i) start with the `icustays_tble`, (ii) merge in admissions and patients tables, (iii) keep adults only (age at ICU intime >= 18), (iv) merge in the labevents and chartevents tables, (v) `collect` the tibble.
 
 ```{r}
-# # TODO
-# mimic_icu_cohort <- 
+mimic_icu_cohort <- icustays_tble %>%
+  left_join(admission_tble, by = c("subject_id", "hadm_id")) %>%
+  left_join(patients_tble, by = "subject_id") %>%
+  mutate(age_at_intime = year(intime) + anchor_age - anchor_year) %>%
+  filter(age_at_intime >= 18) %>%
+  left_join(labevents_tble, by = c("subject_id", "stay_id")) %>%
+  left_join(chartevents_tble, by = c("subject_id", "stay_id")) %>%
+  print(width = Inf)
 ```
 
 ### Q1.8 Preprocessing
@@ -152,6 +157,11 @@ Perform the following preprocessing steps. (i) Lump infrequent levels into "Othe
 Hint: Below is a numerical summary of my tibble after preprocessing:
 
 <iframe width=95% height="500" src="./mimic_icu_cohort_gtsummary.html"></iframe>
+
+```{r}
+
+
+```
 
 ### Q1.9 Save the final tibble
 
