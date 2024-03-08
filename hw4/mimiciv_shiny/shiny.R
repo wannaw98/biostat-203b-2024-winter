@@ -8,7 +8,7 @@ library(forcats)
 
 # load dataset 
 mimic_icu_cohort <- readRDS(
-  "~/203b-lecture/203b-hw/hw4/mimiciv_shiny/mimic_icu_cohort.rds")
+  "mimic_icu_cohort.rds")
 
 demographvar <- c("race", "insurance", "marital_status", 
                   "gender", "age_at_intime")
