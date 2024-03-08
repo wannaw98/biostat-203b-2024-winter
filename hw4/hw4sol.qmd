@@ -12,7 +12,7 @@ format:
     toc-location: left
     code-fold: false
 execute:
-  eval: false
+  eval: True
 ---
 
 Display machine information:
@@ -33,6 +33,7 @@ library(gt)
 library(gtsummary)
 library(tidyverse)
 library(forcats)
+library(shiny)
 ```
 
 ## Q1. Compile the ICU cohort in HW3 from the Google BigQuery database 
@@ -50,7 +51,6 @@ bq_auth(path = satoken)
 ```
 Connect to BigQuery database `mimic4_v2_2` in GCP (Google Cloud Platform), using the project billing account `biostat-203b-2024-winter`.
 ```{r}
-# connect to the BigQuery database `biostat-203b-2024-winter.mimic4_v2_2`
 con_bq <- dbConnect(
     bigrquery::bigquery(),
     project = "biostat-203b-2024-winter",
@@ -235,16 +235,18 @@ mimic_icu_cohort <- mimic_icu_cohort %>%
 
 ```
 
+
+
 ```{r}
-mimic_icu_cohort <- mimic_icu_cohort %>%
-  select(first_careunit, last_careunit, los, admission_type, admission_location,
-         discharge_location, insurance, language, marital_status, race,
-         hospital_expire_flag, gender, dod, age_at_intime, subject_id, 
-         creatinine, potassium, sodium, chloride, 
-         bicarbonate, hematocrit, 'white blood cell count',
-         glucose, 'heart rate', 'systolic non-invasive blood pressure', 
-         'diastolic non-invasive blood pressure', 
-         'body temperature in Fahrenheit', 'respiratory rate')
+mimic_icu_cohort$`heart rate` <- as.numeric(mimic_icu_cohort$`heart rate`)
+mimic_icu_cohort$`systolic non-invasive blood pressure` <- as.numeric(
+  mimic_icu_cohort$`systolic non-invasive blood pressure`)
+mimic_icu_cohort$`diastolic non-invasive blood pressure` <- as.numeric(
+  mimic_icu_cohort$`diastolic non-invasive blood pressure`)
+mimic_icu_cohort$`body temperature in Fahrenheit` <- as.numeric(
+  mimic_icu_cohort$`body temperature in Fahrenheit`)
+mimic_icu_cohort$`respiratory rate` <- as.numeric(
+  mimic_icu_cohort$`respiratory rate`)
 
 ```
 
@@ -252,12 +254,20 @@ mimic_icu_cohort <- mimic_icu_cohort %>%
 summary_table <- mimic_icu_cohort %>%
   select(first_careunit, last_careunit, los, admission_type, admission_location,
          discharge_location, insurance, language, marital_status, race,
-         hospital_expire_flag, gender, dod, age_at_intime, subject_id )
-  group_by(first_careunit, los_long) %>%
-  summarise(N = n_distinct(subject_id), .groups = 'drop') %>%
-  mutate(Percent = N / sum(N))
+         hospital_expire_flag, gender, dod, age_at_intime, los_long,
+         creatinine, potassium, sodium, chloride, 
+         bicarbonate, hematocrit, 'white blood cell count',
+         glucose, 'heart rate', 'systolic non-invasive blood pressure', 
+         'diastolic non-invasive blood pressure', 
+         'body temperature in Fahrenheit', 'respiratory rate') %>%
+  tbl_summary(by = los_long)
+```
+
+```{r}
+summary_table
 
 ```
+
 ### Q1.9 Save the final tibble
 
 Save the final tibble to an R data file `mimic_icu_cohort.rds` in the `mimiciv_shiny` folder.
@@ -270,6 +280,8 @@ if (!dir.exists("mimiciv_shiny")) {
 mimic_icu_cohort |>
   write_rds("mimiciv_shiny/mimic_icu_cohort.rds", compress = "gz")
 ```
+
+
 Close database connection and clear workspace.
 ```{r}
 if (exists("con_bq")) {
