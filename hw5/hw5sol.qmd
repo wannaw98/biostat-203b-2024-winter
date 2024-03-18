@@ -43,6 +43,10 @@ mimic_icu_cohort <- readRDS("mimic_icu_cohort.rds") %>%
   print(width = Inf)
   
 ```
+```{r}
+mimic_icu_cohort$los_long <- as.factor(mimic_icu_cohort$los_long)
+
+```
 
 ```{r}
 mimic_icu_cohort %>% tbl_summary(by = los_long)
@@ -65,14 +69,130 @@ data_split <- initial_split(
 ```
 
 ```{r}
-mimic_train <- training(data_split)
-dim(mimic_train)
+mimic_other <- training(data_split)
+dim(mimic_other)
 ```
 
 ```{r}
 mimic_test <- testing(data_split)
 dim(mimic_test)
 ```
+**Answer:** There are missing values in 'marital_status', lab measurements and
+vital measurements, so we will use the imputation.
+```{r}
+# Recipe
+logit_recipe <- 
+  recipe(
+    los_long ~ ., 
+    data = mimic_other
+  ) %>%
+  # imputation 
+  step_impute_mean(creatinine, sodium, chloride, bicarbonate,
+         'white blood cell count', glucose, potassium, hematocrit, 
+         'systolic non-invasive blood pressure', 
+         'body temperature in Fahrenheit',
+         'respiratory rate', 'diastolic non-invasive blood pressure', 
+         'heart rate') %>%
+  step_impute_mode(marital_status) %>%
+  # create traditional dummy variables
+  step_dummy(all_nominal_predictors()) %>%
+  # zero-variance filter
+  step_zv(all_numeric_predictors()) %>%
+  # center and scale numeric data
+  step_normalize(all_numeric_predictors()) %>%
+  # estimate the means and standard deviations
+  # prep(training = Heart_other, retain = TRUE) %>%
+  print()
+
+```
 3. Train and tune the models using the training set.
 
 4. Compare model classification performance on the test set. Report both the area under ROC curve and accuracy for each machine learning algorithm and the model stacking. Interpret the results. What are the most important features in predicting long ICU stays? How do the models compare in terms of performance and interpretability?
+
+**Answer:** 1. Logistic Regression
+```{r}
+# Model
+logit_mod <- 
+  logistic_reg(
+    penalty = tune(), 
+    mixture = tune()
+  ) %>% 
+  set_engine("glmnet", standardize = FALSE) %>%
+  print()
+```
+
+```{r}
+# Workflow
+logit_wf <- workflow() %>%
+  add_recipe(logit_recipe) %>%
+  add_model(logit_mod)
+logit_wf
+```
+
+```{r}
+# grid
+param_grid <- grid_regular(
+  penalty(range = c(-6, 3)), 
+  mixture(),
+  levels = c(100, 5)
+  ) %>%
+  print()
+
+```
+
+```{r}
+# CV
+set.seed(203)
+
+folds <- vfold_cv(mimic_other, v = 5)
+folds
+
+```
+
+```{r}
+(logit_fit <- logit_wf %>%
+  tune_grid(
+    resamples = folds,
+    grid = param_grid,
+    metrics = metric_set(roc_auc, accuracy)
+    )) %>%
+  system.time()
+
+```
+
+```{r}
+logit_fit
+```
+
+```{r}
+logit_fit %>%
+  show_best("roc_auc")
+```
+
+```{r}
+best_logit <- logit_fit %>%
+  select_best("roc_auc")
+best_logit
+```
+
+```{r}
+# Final workflow
+final_wf <- logit_wf %>%
+  finalize_workflow(best_logit)
+final_wf
+```
+
+```{r}
+# Fit the whole training set, then predict the test cases
+final_fit <- 
+  final_wf %>%
+  last_fit(data_split)
+final_fit
+```
+
+```{r}
+# Test metrics
+final_fit %>%
+  collect_metrics()
+```
+

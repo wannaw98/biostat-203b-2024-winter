@@ -3074,7 +3074,7 @@ vertical-align: -.125em;
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>#StandWithUkraine</code></pre>
+<pre><code>#BlackLivesMatter</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -3225,23 +3225,26 @@ The following object is masked from &#39;package:dplyr&#39;:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mimic_icu_cohort <span class="sc">%&gt;%</span> <span class="fu">tbl_summary</span>(<span class="at">by =</span> los_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>mimic_icu_cohort<span class="sc">$</span>los_long <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(mimic_icu_cohort<span class="sc">$</span>los_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mimic_icu_cohort <span class="sc">%&gt;%</span> <span class="fu">tbl_summary</span>(<span class="at">by =</span> los_long)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="ycipetdsvx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ycipetdsvx table {
+<div id="qnljewpcor" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qnljewpcor table {
 font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
 }
-#ycipetdsvx thead, #ycipetdsvx tbody, #ycipetdsvx tfoot, #ycipetdsvx tr, #ycipetdsvx td, #ycipetdsvx th {
+#qnljewpcor thead, #qnljewpcor tbody, #qnljewpcor tfoot, #qnljewpcor tr, #qnljewpcor td, #qnljewpcor th {
 border-style: none;
 }
-#ycipetdsvx p {
+#qnljewpcor p {
 margin: 0;
 padding: 0;
 }
-#ycipetdsvx .gt_table {
+#qnljewpcor .gt_table {
 display: table;
 border-collapse: collapse;
 line-height: normal;
@@ -3266,11 +3269,11 @@ border-left-style: none;
 border-left-width: 2px;
 border-left-color: #D3D3D3;
 }
-#ycipetdsvx .gt_caption {
+#qnljewpcor .gt_caption {
 padding-top: 4px;
 padding-bottom: 4px;
 }
-#ycipetdsvx .gt_title {
+#qnljewpcor .gt_title {
 color: #333333;
 font-size: 125%;
 font-weight: initial;
@@ -3281,7 +3284,7 @@ padding-right: 5px;
 border-bottom-color: #FFFFFF;
 border-bottom-width: 0;
 }
-#ycipetdsvx .gt_subtitle {
+#qnljewpcor .gt_subtitle {
 color: #333333;
 font-size: 85%;
 font-weight: initial;
@@ -3292,7 +3295,7 @@ padding-right: 5px;
 border-top-color: #FFFFFF;
 border-top-width: 0;
 }
-#ycipetdsvx .gt_heading {
+#qnljewpcor .gt_heading {
 background-color: #FFFFFF;
 text-align: center;
 border-bottom-color: #FFFFFF;
@@ -3303,12 +3306,12 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ycipetdsvx .gt_bottom_border {
+#qnljewpcor .gt_bottom_border {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ycipetdsvx .gt_col_headings {
+#qnljewpcor .gt_col_headings {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3322,7 +3325,7 @@ border-right-style: none;
 border-right-width: 1px;
 border-right-color: #D3D3D3;
 }
-#ycipetdsvx .gt_col_heading {
+#qnljewpcor .gt_col_heading {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3341,7 +3344,7 @@ padding-left: 5px;
 padding-right: 5px;
 overflow-x: hidden;
 }
-#ycipetdsvx .gt_column_spanner_outer {
+#qnljewpcor .gt_column_spanner_outer {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3352,13 +3355,13 @@ padding-bottom: 0;
 padding-left: 4px;
 padding-right: 4px;
 }
-#ycipetdsvx .gt_column_spanner_outer:first-child {
+#qnljewpcor .gt_column_spanner_outer:first-child {
 padding-left: 0;
 }
-#ycipetdsvx .gt_column_spanner_outer:last-child {
+#qnljewpcor .gt_column_spanner_outer:last-child {
 padding-right: 0;
 }
-#ycipetdsvx .gt_column_spanner {
+#qnljewpcor .gt_column_spanner {
 border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
@@ -3369,10 +3372,10 @@ overflow-x: hidden;
 display: inline-block;
 width: 100%;
 }
-#ycipetdsvx .gt_spanner_row {
+#qnljewpcor .gt_spanner_row {
 border-bottom-style: hidden;
 }
-#ycipetdsvx .gt_group_heading {
+#qnljewpcor .gt_group_heading {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3397,7 +3400,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 text-align: left;
 }
-#ycipetdsvx .gt_empty_group_heading {
+#qnljewpcor .gt_empty_group_heading {
 padding: 0.5px;
 color: #333333;
 background-color: #FFFFFF;
@@ -3411,13 +3414,13 @@ border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 vertical-align: middle;
 }
-#ycipetdsvx .gt_from_md > :first-child {
+#qnljewpcor .gt_from_md > :first-child {
 margin-top: 0;
 }
-#ycipetdsvx .gt_from_md > :last-child {
+#qnljewpcor .gt_from_md > :last-child {
 margin-bottom: 0;
 }
-#ycipetdsvx .gt_row {
+#qnljewpcor .gt_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3435,7 +3438,7 @@ border-right-color: #D3D3D3;
 vertical-align: middle;
 overflow-x: hidden;
 }
-#ycipetdsvx .gt_stub {
+#qnljewpcor .gt_stub {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3447,7 +3450,7 @@ border-right-color: #D3D3D3;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ycipetdsvx .gt_stub_row_group {
+#qnljewpcor .gt_stub_row_group {
 color: #333333;
 background-color: #FFFFFF;
 font-size: 100%;
@@ -3460,13 +3463,13 @@ padding-left: 5px;
 padding-right: 5px;
 vertical-align: top;
 }
-#ycipetdsvx .gt_row_group_first td {
+#qnljewpcor .gt_row_group_first td {
 border-top-width: 2px;
 }
-#ycipetdsvx .gt_row_group_first th {
+#qnljewpcor .gt_row_group_first th {
 border-top-width: 2px;
 }
-#ycipetdsvx .gt_summary_row {
+#qnljewpcor .gt_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3475,14 +3478,14 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ycipetdsvx .gt_first_summary_row {
+#qnljewpcor .gt_first_summary_row {
 border-top-style: solid;
 border-top-color: #D3D3D3;
 }
-#ycipetdsvx .gt_first_summary_row.thick {
+#qnljewpcor .gt_first_summary_row.thick {
 border-top-width: 2px;
 }
-#ycipetdsvx .gt_last_summary_row {
+#qnljewpcor .gt_last_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3491,7 +3494,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ycipetdsvx .gt_grand_summary_row {
+#qnljewpcor .gt_grand_summary_row {
 color: #333333;
 background-color: #FFFFFF;
 text-transform: inherit;
@@ -3500,7 +3503,7 @@ padding-bottom: 8px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ycipetdsvx .gt_first_grand_summary_row {
+#qnljewpcor .gt_first_grand_summary_row {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3509,7 +3512,7 @@ border-top-style: double;
 border-top-width: 6px;
 border-top-color: #D3D3D3;
 }
-#ycipetdsvx .gt_last_grand_summary_row_top {
+#qnljewpcor .gt_last_grand_summary_row_top {
 padding-top: 8px;
 padding-bottom: 8px;
 padding-left: 5px;
@@ -3518,10 +3521,10 @@ border-bottom-style: double;
 border-bottom-width: 6px;
 border-bottom-color: #D3D3D3;
 }
-#ycipetdsvx .gt_striped {
+#qnljewpcor .gt_striped {
 background-color: rgba(128, 128, 128, 0.05);
 }
-#ycipetdsvx .gt_table_body {
+#qnljewpcor .gt_table_body {
 border-top-style: solid;
 border-top-width: 2px;
 border-top-color: #D3D3D3;
@@ -3529,7 +3532,7 @@ border-bottom-style: solid;
 border-bottom-width: 2px;
 border-bottom-color: #D3D3D3;
 }
-#ycipetdsvx .gt_footnotes {
+#qnljewpcor .gt_footnotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3542,7 +3545,7 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ycipetdsvx .gt_footnote {
+#qnljewpcor .gt_footnote {
 margin: 0px;
 font-size: 90%;
 padding-top: 4px;
@@ -3550,7 +3553,7 @@ padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ycipetdsvx .gt_sourcenotes {
+#qnljewpcor .gt_sourcenotes {
 color: #333333;
 background-color: #FFFFFF;
 border-bottom-style: none;
@@ -3563,57 +3566,57 @@ border-right-style: none;
 border-right-width: 2px;
 border-right-color: #D3D3D3;
 }
-#ycipetdsvx .gt_sourcenote {
+#qnljewpcor .gt_sourcenote {
 font-size: 90%;
 padding-top: 4px;
 padding-bottom: 4px;
 padding-left: 5px;
 padding-right: 5px;
 }
-#ycipetdsvx .gt_left {
+#qnljewpcor .gt_left {
 text-align: left;
 }
-#ycipetdsvx .gt_center {
+#qnljewpcor .gt_center {
 text-align: center;
 }
-#ycipetdsvx .gt_right {
+#qnljewpcor .gt_right {
 text-align: right;
 font-variant-numeric: tabular-nums;
 }
-#ycipetdsvx .gt_font_normal {
+#qnljewpcor .gt_font_normal {
 font-weight: normal;
 }
-#ycipetdsvx .gt_font_bold {
+#qnljewpcor .gt_font_bold {
 font-weight: bold;
 }
-#ycipetdsvx .gt_font_italic {
+#qnljewpcor .gt_font_italic {
 font-style: italic;
 }
-#ycipetdsvx .gt_super {
+#qnljewpcor .gt_super {
 font-size: 65%;
 }
-#ycipetdsvx .gt_footnote_marks {
+#qnljewpcor .gt_footnote_marks {
 font-size: 75%;
 vertical-align: 0.4em;
 position: initial;
 }
-#ycipetdsvx .gt_asterisk {
+#qnljewpcor .gt_asterisk {
 font-size: 100%;
 vertical-align: 0;
 }
-#ycipetdsvx .gt_indent_1 {
+#qnljewpcor .gt_indent_1 {
 text-indent: 5px;
 }
-#ycipetdsvx .gt_indent_2 {
+#qnljewpcor .gt_indent_2 {
 text-indent: 10px;
 }
-#ycipetdsvx .gt_indent_3 {
+#qnljewpcor .gt_indent_3 {
 text-indent: 15px;
 }
-#ycipetdsvx .gt_indent_4 {
+#qnljewpcor .gt_indent_4 {
 text-indent: 20px;
 }
-#ycipetdsvx .gt_indent_5 {
+#qnljewpcor .gt_indent_5 {
 text-indent: 25px;
 }
 </style>
@@ -3794,35 +3797,312 @@ text-indent: 25px;
 <li>Partition data into 50% training set and 50% test set. Stratify partitioning according to <code>los_long</code>. For grading purpose, sort the data by <code>subject_id</code>, <code>hadm_id</code>, and <code>stay_id</code> and use the seed <code>203</code> for the initial data split. Below is the sample code.</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sort</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>mimic_icu_cohort <span class="ot">&lt;-</span> mimic_icu_cohort <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(subject_id, hadm_id, stay_id)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  mimic_icu_cohort, </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># stratify by los_long</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;los_long&quot;</span>, </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop =</span> <span class="fl">0.5</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sort</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>mimic_icu_cohort <span class="ot">&lt;-</span> mimic_icu_cohort <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(subject_id, hadm_id, stay_id)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  mimic_icu_cohort, </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># stratify by los_long</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;los_long&quot;</span>, </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop =</span> <span class="fl">0.5</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mimic_train <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(mimic_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mimic_other <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(mimic_other)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 36590    22</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mimic_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(mimic_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mimic_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(mimic_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 36591    22</code></pre>
+</div>
+</div>
+<p><strong>Answer:</strong> There are missing values in ‘marital_status’, lab measurements and vital measurements, so we will use the imputation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recipe</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>logit_recipe <span class="ot">&lt;-</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    los_long <span class="sc">~</span> ., </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> mimic_other</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># imputation </span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mean</span>(creatinine, sodium, chloride, bicarbonate,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>         <span class="st">&#39;white blood cell count&#39;</span>, glucose, potassium, hematocrit, </span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>         <span class="st">&#39;systolic non-invasive blood pressure&#39;</span>, </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>         <span class="st">&#39;body temperature in Fahrenheit&#39;</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>         <span class="st">&#39;respiratory rate&#39;</span>, <span class="st">&#39;diastolic non-invasive blood pressure&#39;</span>, </span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>         <span class="st">&#39;heart rate&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_impute_mode</span>(marital_status) <span class="sc">%&gt;%</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create traditional dummy variables</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># zero-variance filter</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># center and scale numeric data</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># estimate the means and standard deviations</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prep(training = Heart_other, retain = TRUE) %&gt;%</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 21</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Mean imputation for: creatinine, sodium, chloride, bicarbonate, ...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Mode imputation for: marital_status</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Dummy variables from: all_nominal_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Zero variance filter on: all_numeric_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Centering and scaling for: all_numeric_predictors()</code></pre>
 </div>
 </div>
 <ol start="3" type="1">
 <li><p>Train and tune the models using the training set.</p></li>
 <li><p>Compare model classification performance on the test set. Report both the area under ROC curve and accuracy for each machine learning algorithm and the model stacking. Interpret the results. What are the most important features in predicting long ICU stays? How do the models compare in terms of performance and interpretability?</p></li>
 </ol>
+<p><strong>Answer:</strong> 1. Logistic Regression</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>logit_mod <span class="ot">&lt;-</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>(</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">penalty =</span> <span class="fu">tune</span>(), </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mixture =</span> <span class="fu">tune</span>()</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">&quot;glmnet&quot;</span>, <span class="at">standardize =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Logistic Regression Model Specification (classification)
+
+Main Arguments:
+  penalty = tune()
+  mixture = tune()
+
+Engine-Specific Arguments:
+  standardize = FALSE
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Workflow</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>logit_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(logit_recipe) <span class="sc">%&gt;%</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(logit_mod)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>logit_wf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+5 Recipe Steps
+
+• step_impute_mean()
+• step_impute_mode()
+• step_dummy()
+• step_zv()
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Logistic Regression Model Specification (classification)
+
+Main Arguments:
+  penalty = tune()
+  mixture = tune()
+
+Engine-Specific Arguments:
+  standardize = FALSE
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grid</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>param_grid <span class="ot">&lt;-</span> <span class="fu">grid_regular</span>(</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">penalty</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">3</span>)), </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mixture</span>(),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">5</span>)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 500 × 2
+      penalty mixture
+        &lt;dbl&gt;   &lt;dbl&gt;
+ 1 0.000001         0
+ 2 0.00000123       0
+ 3 0.00000152       0
+ 4 0.00000187       0
+ 5 0.00000231       0
+ 6 0.00000285       0
+ 7 0.00000351       0
+ 8 0.00000433       0
+ 9 0.00000534       0
+10 0.00000658       0
+# ℹ 490 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CV</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">203</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(mimic_other, <span class="at">v =</span> <span class="dv">5</span>)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>folds</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  5-fold cross-validation 
+# A tibble: 5 × 2
+  splits               id   
+  &lt;list&gt;               &lt;chr&gt;
+1 &lt;split [29272/7318]&gt; Fold1
+2 &lt;split [29272/7318]&gt; Fold2
+3 &lt;split [29272/7318]&gt; Fold3
+4 &lt;split [29272/7318]&gt; Fold4
+5 &lt;split [29272/7318]&gt; Fold5</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>(logit_fit <span class="ot">&lt;-</span> logit_wf <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> folds,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> param_grid,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(roc_auc, accuracy)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">system.time</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   user  system elapsed 
+ 66.062   0.530  66.617 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>logit_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Tuning results
+# 5-fold cross-validation 
+# A tibble: 5 × 4
+  splits               id    .metrics             .notes          
+  &lt;list&gt;               &lt;chr&gt; &lt;list&gt;               &lt;list&gt;          
+1 &lt;split [29272/7318]&gt; Fold1 &lt;tibble [1,000 × 6]&gt; &lt;tibble [0 × 3]&gt;
+2 &lt;split [29272/7318]&gt; Fold2 &lt;tibble [1,000 × 6]&gt; &lt;tibble [0 × 3]&gt;
+3 &lt;split [29272/7318]&gt; Fold3 &lt;tibble [1,000 × 6]&gt; &lt;tibble [0 × 3]&gt;
+4 &lt;split [29272/7318]&gt; Fold4 &lt;tibble [1,000 × 6]&gt; &lt;tibble [0 × 3]&gt;
+5 &lt;split [29272/7318]&gt; Fold5 &lt;tibble [1,000 × 6]&gt; &lt;tibble [0 × 3]&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>logit_fit <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_best</span>(<span class="st">&quot;roc_auc&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 8
+     penalty mixture .metric .estimator  mean     n std_err .config             
+       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 0.00658          0 roc_auc binary     0.599     5 0.00393 Preprocessor1_Model…
+2 0.000001         0 roc_auc binary     0.599     5 0.00393 Preprocessor1_Model…
+3 0.00000123       0 roc_auc binary     0.599     5 0.00393 Preprocessor1_Model…
+4 0.00000152       0 roc_auc binary     0.599     5 0.00393 Preprocessor1_Model…
+5 0.00000187       0 roc_auc binary     0.599     5 0.00393 Preprocessor1_Model…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>best_logit <span class="ot">&lt;-</span> logit_fit <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="st">&quot;roc_auc&quot;</span>)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>best_logit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  penalty mixture .config               
+    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                 
+1 0.00658       0 Preprocessor1_Model043</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Final workflow</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>final_wf <span class="ot">&lt;-</span> logit_wf <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best_logit)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>final_wf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+5 Recipe Steps
+
+• step_impute_mean()
+• step_impute_mode()
+• step_dummy()
+• step_zv()
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Logistic Regression Model Specification (classification)
+
+Main Arguments:
+  penalty = 0.00657933224657568
+  mixture = 0
+
+Engine-Specific Arguments:
+  standardize = FALSE
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the whole training set, then predict the test cases</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>final_fit <span class="ot">&lt;-</span> </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  final_wf <span class="sc">%&gt;%</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(data_split)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>final_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits                id             .metrics .notes   .predictions .workflow 
+  &lt;list&gt;                &lt;chr&gt;          &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [36590/36591]&gt; train/test sp… &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test metrics</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>final_fit <span class="sc">%&gt;%</span></span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  .metric  .estimator .estimate .config             
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 accuracy binary         0.574 Preprocessor1_Model1
+2 roc_auc  binary         0.597 Preprocessor1_Model1</code></pre>
+</div>
+</div>
 </section>
 
 </main>
