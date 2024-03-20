@@ -11,6 +11,7 @@ format:
     toc-depth: 4
     toc-location: left
     code-fold: false
+    eval: false
 ---
 
 ## Predicting ICU duration
@@ -27,7 +28,8 @@ library(tidymodels)
 library(ranger)
 library(glmnet)
 library(xgboost)
-library(readr)
+library(stacks)
+library(keras)
 
 ```
 
@@ -166,6 +168,17 @@ logit_fit
 
 ```{r}
 logit_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = penalty, y = mean, color = factor(mixture))) +
+  geom_point() +
+  labs(x = "Penalty", y = "CV AUC") +
+  scale_x_log10()
+```
+
+```{r}
+logit_fit %>%
   show_best("roc_auc")
 ```
 
@@ -190,6 +203,8 @@ final_fit_logit <-
 final_fit_logit
 ```
 
+The area under ROC curve and the accuracy for logistic regression
+model are shown below:
 ```{r}
 # Test metrics
 final_fit_logit %>%
@@ -249,6 +264,17 @@ rf_fit
 
 ```{r}
 rf_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = trees, y = mean, color = factor(mtry))) +
+  geom_point() + 
+  # geom_line() + 
+  labs(x = "Num. of Trees", y = "CV AUC")
+```
+
+```{r}
+rf_fit %>%
   show_best("roc_auc")
 
 ```
@@ -274,6 +300,8 @@ final_fit_rf <-
 final_fit_rf
 ```
 
+The area under ROC curve and the accuracy for random forest model 
+are shown below:
 ```{r}
 final_fit_rf %>% 
   collect_metrics()
@@ -293,3 +321,203 @@ gb_mod <-
 gb_mod
 ```
 
+```{r}
+gb_wf <- workflow() %>%
+  add_recipe(mimic_recipe) %>%
+  add_model(gb_mod)
+gb_wf
+```
+
+```{r}
+param_grid_gb <- grid_regular(
+  tree_depth(range = c(1L, 3L)),
+  learn_rate(range = c(-5, 2), trans = log10_trans()),
+  levels = c(3, 3)
+  )
+param_grid_gb
+```
+
+```{r}
+set.seed(203)
+
+folds_gb <- vfold_cv(mimic_other, v = 3)
+folds_gb
+```
+
+```{r}
+gb_fit <- gb_wf %>%
+  tune_grid(
+    resamples = folds_gb,
+    grid = param_grid_gb,
+    metrics = metric_set(roc_auc, accuracy)
+    )
+gb_fit
+```
+
+```{r}
+gb_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = learn_rate, y = mean, color = factor(tree_depth))) +
+  geom_point() +
+  labs(x = "Learning Rate", y = "CV AUC") +
+  scale_x_log10()
+```
+
+```{r}
+gb_fit %>%
+  show_best("roc_auc")
+```
+
+```{r}
+best_gb <- gb_fit %>%
+  select_best("roc_auc")
+best_gb
+```
+
+```{r}
+# Final workflow
+final_wf_gb <- gb_wf %>%
+  finalize_workflow(best_gb)
+final_wf_gb
+```
+
+```{r}
+final_fit_gb <- 
+  final_wf_gb %>%
+  last_fit(data_split)
+final_fit_gb
+```
+
+The area under ROC curve and the accuracy for XGBoost model are shown below:
+```{r}
+final_fit_gb %>% 
+  collect_metrics()
+```
+
+**Answer:** 4. Model Stacking
+```{r}
+set.seed(203)
+folds_stack <- vfold_cv(mimic_other, v = 2)
+```
+
+
+```{r}
+# logistic regression
+stack_grid_logit <- grid_regular(
+  penalty(range = c(0, 3)), 
+  mixture(),
+  levels = c(10, 5)
+  )
+
+logit_res <- 
+  tune_grid(
+    object = logit_wf, 
+    resamples = folds_stack, 
+    grid = stack_grid_logit,
+    control = control_stack_grid()
+  )
+logit_res
+```
+
+```{r}
+# random forest
+stack_grid_rf <- grid_regular(
+  trees(range = c(20L, 30L)), 
+  mtry(range = c(1L, 2L)),
+  levels = c(2, 2)
+  )
+
+rf_res <- 
+  tune_grid(
+    object = rf_wf, 
+    resamples = folds_stack, 
+    grid = param_grid_rf,
+    control = control_stack_grid()
+  )
+rf_res
+```
+
+```{r}
+# XGBoost
+stack_grid_gb <- grid_regular(
+  tree_depth(range = c(1L, 2L)),
+  learn_rate(range = c(-1, 0), trans = log10_trans()),
+  levels = c(2, 2)
+  )
+
+gb_res <- 
+  tune_grid(
+    object = gb_wf, 
+    resamples = folds_stack, 
+    grid = stack_grid_gb,
+    control = control_stack_grid()
+  )
+gb_res
+```
+
+```{r}
+mimic_model_st <- 
+  stacks() %>%
+  add_candidates(logit_res) %>%
+  add_candidates(rf_res) %>%
+  add_candidates(gb_res) %>%
+  blend_predictions(
+    penalty = 10^(-4),
+    metrics = c("roc_auc")
+    ) %>%
+  # fit the candidates with nonzero stacking coefficients
+  fit_members()
+mimic_model_st
+```
+
+```{r}
+autoplot(mimic_model_st)
+```
+
+```{r}
+autoplot(mimic_model_st, type = "members")
+autoplot(mimic_model_st, type = "weights")
+
+```
+
+```{r}
+mimic_pred <- mimic_test %>%
+  bind_cols(predict(mimic_model_st, ., type = "prob")) %>%
+  print(width = Inf)
+```
+
+```{r}
+yardstick::roc_auc(
+  mimic_pred,
+  truth = los_long,
+  contains(".pred_TRUE")
+  )
+```
+
+
+```{r}
+mimic_pred <-
+  mimic_test %>%
+  select(los_long) %>%
+  bind_cols(
+    predict(
+      mimic_model_st,
+      mimic_test,
+      type = "class",
+      members = TRUE
+      )
+    ) %>%
+  print(width = Inf)
+```
+
+```{r}
+map(
+  colnames(mimic_pred),
+  ~mean(mimic_pred$los_long == pull(mimic_pred, .x))
+  ) %>%
+  set_names(colnames(mimic_pred)) %>%
+  as_tibble() %>%
+  pivot_longer(c(everything(), -los_long))
+```
