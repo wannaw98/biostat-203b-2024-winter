@@ -81,7 +81,7 @@ dim(mimic_test)
 vital measurements, so we will use the imputation.
 ```{r}
 # Recipe
-logit_recipe <- 
+mimic_recipe <- 
   recipe(
     los_long ~ ., 
     data = mimic_other
@@ -124,14 +124,14 @@ logit_mod <-
 ```{r}
 # Workflow
 logit_wf <- workflow() %>%
-  add_recipe(logit_recipe) %>%
+  add_recipe(mimic_recipe) %>%
   add_model(logit_mod)
 logit_wf
 ```
 
 ```{r}
 # grid
-param_grid <- grid_regular(
+param_grid_logit <- grid_regular(
   penalty(range = c(-6, 3)), 
   mixture(),
   levels = c(100, 5)
@@ -144,16 +144,16 @@ param_grid <- grid_regular(
 # CV
 set.seed(203)
 
-folds <- vfold_cv(mimic_other, v = 5)
-folds
+folds_logit <- vfold_cv(mimic_other, v = 5)
+folds_logit
 
 ```
 
 ```{r}
 (logit_fit <- logit_wf %>%
   tune_grid(
-    resamples = folds,
-    grid = param_grid,
+    resamples = folds_logit,
+    grid = param_grid_logit,
     metrics = metric_set(roc_auc, accuracy)
     )) %>%
   system.time()
@@ -177,22 +177,119 @@ best_logit
 
 ```{r}
 # Final workflow
-final_wf <- logit_wf %>%
+final_wf_logit <- logit_wf %>%
   finalize_workflow(best_logit)
-final_wf
+final_wf_logit
 ```
 
 ```{r}
 # Fit the whole training set, then predict the test cases
-final_fit <- 
-  final_wf %>%
+final_fit_logit <- 
+  final_wf_logit %>%
   last_fit(data_split)
-final_fit
+final_fit_logit
 ```
 
 ```{r}
 # Test metrics
-final_fit %>%
+final_fit_logit %>%
   collect_metrics()
+```
+
+**Answer:** 2. Random Forest
+```{r}
+# Model
+rf_mod <- 
+  rand_forest(
+    mode = "classification",
+    mtry = tune(),
+    trees = tune()
+  ) %>%
+  set_engine("ranger")
+rf_mod
+
+```
+
+```{r}
+# Workflow
+rf_wf <- workflow() %>%
+  add_recipe(mimic_recipe) %>%
+  add_model(rf_mod)
+rf_wf
+
+```
+
+```{r}
+param_grid_rf <- grid_regular(
+  trees(range = c(80L, 120L)), 
+  mtry(range = c(1L, 5L)),
+  levels = c(3, 3)
+  )
+param_grid_rf
+```
+
+```{r}
+set.seed(203)
+
+folds_rf <- vfold_cv(mimic_other, v = 5)
+folds_rf
+
+```
+
+```{r}
+rf_fit <- rf_wf %>%
+  tune_grid(
+    resamples = folds_rf,
+    grid = param_grid_rf,
+    metrics = metric_set(roc_auc, accuracy)
+    )
+rf_fit
+
+```
+
+```{r}
+rf_fit %>%
+  show_best("roc_auc")
+
+```
+
+```{r}
+best_rf <- rf_fit %>%
+  select_best("roc_auc")
+best_rf
+```
+
+```{r}
+# Final workflow
+final_wf_rf <- rf_wf |>
+  finalize_workflow(best_rf)
+final_wf_rf
+
+```
+
+```{r}
+final_fit_rf <- 
+  final_wf_rf %>%
+  last_fit(data_split)
+final_fit_rf
+```
+
+```{r}
+final_fit_rf %>% 
+  collect_metrics()
+```
+
+
+**Answer:** 3. XGBoost
+```{r}
+gb_mod <- 
+  boost_tree(
+    mode = "classification",
+    trees = 1000, 
+    tree_depth = tune(),
+    learn_rate = tune()
+  ) %>% 
+  set_engine("xgboost")
+gb_mod
 ```
 
