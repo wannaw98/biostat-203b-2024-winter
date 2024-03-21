@@ -1,0 +1,559 @@
+---
+title: "Biostat 203B Homework 5"
+subtitle: Due Mar 22 @ 11:59PM
+author: "Yue Wang UID:005704481"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: false
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+---
+
+## Predicting ICU duration
+
+Using the ICU cohort `mimiciv_icu_cohort.rds` you built in Homework 4, develop at least three machine learning approaches (logistic regression with enet regularization, random forest, boosting, SVM, MLP, etc) plus a model stacking approach for predicting whether a patient's ICU stay will be longer than 2 days. You should use the `los_long` variable as the outcome. You algorithms can use patient demographic information (gender, age at ICU `intime`, marital status, race), ICU admission information (first care unit), the last lab measurements before the ICU stay, and first vital measurements during ICU stay as features. You are welcome to use any feature engineering techniques you think are appropriate; but make sure to not use features that are not available at an ICU stay's `intime`. For instance, `last_careunit` cannot be used in your algorithms. 
+
+1. Data preprocessing and feature engineering.
+
+```{r}
+library(GGally)
+library(gtsummary)
+library(tidyverse)
+library(tidymodels)
+library(ranger)
+library(glmnet)
+library(xgboost)
+library(stacks)
+library(keras)
+library(randomForest)
+
+```
+
+```{r}
+mimic_icu_cohort <- readRDS("mimic_icu_cohort.rds") %>%
+  select(los_long, gender, age_at_intime, marital_status, race, 
+         first_careunit, creatinine, sodium, chloride, bicarbonate,
+         'white blood cell count', glucose, potassium, hematocrit, 
+         'systolic non-invasive blood pressure', 
+         'body temperature in Fahrenheit',
+         'respiratory rate', 'diastolic non-invasive blood pressure', 
+         'heart rate', subject_id, hadm_id, stay_id) %>% 
+  print(width = Inf)
+  
+```
+```{r}
+mimic_icu_cohort$los_long <- as.factor(mimic_icu_cohort$los_long)
+
+```
+
+```{r}
+mimic_icu_cohort %>% tbl_summary(by = los_long)
+```
+
+2. Partition data into 50% training set and 50% test set. Stratify partitioning according to `los_long`. For grading purpose, sort the data by `subject_id`, `hadm_id`, and `stay_id` and use the seed `203` for the initial data split. Below is the sample code.
+
+```{r}
+# sort
+mimic_icu_cohort <- mimic_icu_cohort %>%
+  arrange(subject_id, hadm_id, stay_id)
+
+data_split <- initial_split(
+  mimic_icu_cohort, 
+  # stratify by los_long
+  strata = "los_long", 
+  prop = 0.5
+  )
+
+```
+
+```{r}
+mimic_other <- training(data_split)
+dim(mimic_other)
+```
+
+```{r}
+mimic_test <- testing(data_split)
+dim(mimic_test)
+```
+**Answer:** There are missing values in 'marital_status', lab measurements and
+vital measurements, so we will use the imputation.
+```{r}
+# Recipe
+mimic_recipe <- 
+  recipe(
+    los_long ~ ., 
+    data = mimic_other
+  ) %>%
+  # imputation 
+  step_impute_mean(creatinine, sodium, chloride, bicarbonate,
+         'white blood cell count', glucose, potassium, hematocrit, 
+         'systolic non-invasive blood pressure', 
+         'body temperature in Fahrenheit',
+         'respiratory rate', 'diastolic non-invasive blood pressure', 
+         'heart rate') %>%
+  step_impute_mode(marital_status) %>%
+  # create traditional dummy variables
+  step_dummy(all_nominal_predictors()) %>%
+  # zero-variance filter
+  step_zv(all_numeric_predictors()) %>%
+  # center and scale numeric data
+  step_normalize(all_numeric_predictors()) %>%
+  # estimate the means and standard deviations
+  # prep(training = Heart_other, retain = TRUE) %>%
+  print()
+
+```
+3. Train and tune the models using the training set.
+
+4. Compare model classification performance on the test set. Report both the area under ROC curve and accuracy for each machine learning algorithm and the model stacking. Interpret the results. What are the most important features in predicting long ICU stays? How do the models compare in terms of performance and interpretability?
+
+**Answer:** 1. Logistic Regression
+```{r}
+# Model
+logit_mod <- 
+  logistic_reg(
+    penalty = tune(), 
+    mixture = tune()
+  ) %>% 
+  set_engine("glmnet", standardize = FALSE) %>%
+  print()
+```
+
+```{r}
+# Workflow
+logit_wf <- workflow() %>%
+  add_recipe(mimic_recipe) %>%
+  add_model(logit_mod)
+logit_wf
+```
+
+```{r}
+# grid
+param_grid_logit <- grid_regular(
+  penalty(range = c(-6, 3)), 
+  mixture(),
+  levels = c(100, 5)
+  ) %>%
+  print()
+
+```
+
+```{r}
+# CV
+set.seed(203)
+
+folds_logit <- vfold_cv(mimic_other, v = 5)
+folds_logit
+
+```
+
+```{r}
+(logit_fit <- logit_wf %>%
+  tune_grid(
+    resamples = folds_logit,
+    grid = param_grid_logit,
+    metrics = metric_set(roc_auc, accuracy)
+    )) %>%
+  system.time()
+
+```
+
+```{r}
+logit_fit
+```
+
+```{r}
+logit_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = penalty, y = mean, color = factor(mixture))) +
+  geom_point() +
+  labs(x = "Penalty", y = "CV AUC") +
+  scale_x_log10()
+```
+
+```{r}
+logit_fit %>%
+  show_best("roc_auc")
+```
+
+```{r}
+best_logit <- logit_fit %>%
+  select_best("roc_auc")
+best_logit
+```
+
+```{r}
+# Final workflow
+final_wf_logit <- logit_wf %>%
+  finalize_workflow(best_logit)
+final_wf_logit
+```
+
+```{r}
+# Fit the whole training set, then predict the test cases
+final_fit_logit <- 
+  final_wf_logit %>%
+  last_fit(data_split)
+final_fit_logit
+```
+
+The area under ROC curve and the accuracy for logistic regression
+model are shown below:
+```{r}
+# Test metrics
+final_fit_logit %>%
+  collect_metrics()
+```
+
+
+
+**Answer:** 2. Random Forest
+```{r}
+# Model
+rf_mod <- 
+  rand_forest(
+    mode = "classification",
+    mtry = tune(),
+    trees = tune()
+  ) %>%
+  set_engine("ranger")
+rf_mod
+
+```
+
+```{r}
+# Workflow
+rf_wf <- workflow() %>%
+  add_recipe(mimic_recipe) %>%
+  add_model(rf_mod)
+rf_wf
+
+```
+
+```{r}
+param_grid_rf <- grid_regular(
+  trees(range = c(80L, 120L)), 
+  mtry(range = c(1L, 5L)),
+  levels = c(3, 3)
+  )
+param_grid_rf
+```
+
+```{r}
+set.seed(203)
+
+folds_rf <- vfold_cv(mimic_other, v = 5)
+folds_rf
+
+```
+
+```{r}
+rf_fit <- rf_wf %>%
+  tune_grid(
+    resamples = folds_rf,
+    grid = param_grid_rf,
+    metrics = metric_set(roc_auc, accuracy)
+    )
+rf_fit
+
+```
+
+
+
+```{r}
+rf_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = trees, y = mean, color = factor(mtry))) +
+  geom_point() + 
+  # geom_line() + 
+  labs(x = "Num. of Trees", y = "CV AUC")
+```
+
+```{r}
+rf_fit %>%
+  show_best("roc_auc")
+
+```
+
+```{r}
+best_rf <- rf_fit %>%
+  select_best("roc_auc")
+best_rf
+```
+
+```{r}
+# Final workflow
+final_wf_rf <- rf_wf %>%
+  finalize_workflow(best_rf)
+final_wf_rf
+
+```
+
+```{r}
+final_fit_rf <- 
+  final_wf_rf %>%
+  last_fit(data_split)
+final_fit_rf
+```
+
+The area under ROC curve and the accuracy for random forest model 
+are shown below:
+```{r}
+final_fit_rf %>% 
+  collect_metrics()
+```
+
+
+
+**Answer:** 3. XGBoost
+```{r}
+gb_mod <- 
+  boost_tree(
+    mode = "classification",
+    trees = 1000, 
+    tree_depth = tune(),
+    learn_rate = tune()
+  ) %>% 
+  set_engine("xgboost")
+gb_mod
+```
+
+```{r}
+gb_wf <- workflow() %>%
+  add_recipe(mimic_recipe) %>%
+  add_model(gb_mod)
+gb_wf
+```
+
+```{r}
+param_grid_gb <- grid_regular(
+  tree_depth(range = c(1L, 3L)),
+  learn_rate(range = c(-5, 2), trans = log10_trans()),
+  levels = c(3, 3)
+  )
+param_grid_gb
+```
+
+```{r}
+set.seed(203)
+
+folds_gb <- vfold_cv(mimic_other, v = 3)
+folds_gb
+```
+
+```{r}
+gb_fit <- gb_wf %>%
+  tune_grid(
+    resamples = folds_gb,
+    grid = param_grid_gb,
+    metrics = metric_set(roc_auc, accuracy)
+    )
+gb_fit
+```
+
+```{r}
+gb_fit %>%
+  collect_metrics() %>%
+  print(width = Inf) %>%
+  filter(.metric == "roc_auc") %>%
+  ggplot(mapping = aes(x = learn_rate, y = mean, color = factor(tree_depth))) +
+  geom_point() +
+  labs(x = "Learning Rate", y = "CV AUC") +
+  scale_x_log10()
+```
+
+```{r}
+gb_fit %>%
+  show_best("roc_auc")
+```
+
+```{r}
+best_gb <- gb_fit %>%
+  select_best("roc_auc")
+best_gb
+```
+
+```{r}
+# Final workflow
+final_wf_gb <- gb_wf %>%
+  finalize_workflow(best_gb)
+final_wf_gb
+```
+
+```{r}
+final_fit_gb <- 
+  final_wf_gb %>%
+  last_fit(data_split)
+final_fit_gb
+```
+
+The area under ROC curve and the accuracy for XGBoost model are shown below:
+```{r}
+final_fit_gb %>% 
+  collect_metrics()
+```
+
+**Answer:** 4. Model Stacking
+```{r}
+set.seed(203)
+folds_stack <- vfold_cv(mimic_other, v = 2)
+```
+
+
+```{r}
+# logistic regression
+stack_grid_logit <- grid_regular(
+  penalty(range = c(0, 3)), 
+  mixture(),
+  levels = c(10, 5)
+  )
+
+logit_res <- 
+  tune_grid(
+    object = logit_wf, 
+    resamples = folds_stack, 
+    grid = stack_grid_logit,
+    control = control_stack_grid()
+  )
+logit_res
+```
+
+```{r}
+# random forest
+stack_grid_rf <- grid_regular(
+  trees(range = c(20L, 30L)), 
+  mtry(range = c(1L, 2L)),
+  levels = c(2, 2)
+  )
+
+rf_res <- 
+  tune_grid(
+    object = rf_wf, 
+    resamples = folds_stack, 
+    grid = param_grid_rf,
+    control = control_stack_grid()
+  )
+rf_res
+```
+
+```{r}
+# XGBoost
+stack_grid_gb <- grid_regular(
+  tree_depth(range = c(1L, 2L)),
+  learn_rate(range = c(-1, 0), trans = log10_trans()),
+  levels = c(2, 2)
+  )
+
+gb_res <- 
+  tune_grid(
+    object = gb_wf, 
+    resamples = folds_stack, 
+    grid = stack_grid_gb,
+    control = control_stack_grid()
+  )
+gb_res
+```
+
+```{r}
+mimic_model_st <- 
+  stacks() %>%
+  add_candidates(logit_res) %>%
+  add_candidates(rf_res) %>%
+  add_candidates(gb_res) %>%
+  blend_predictions(
+    penalty = 10^(-4),
+    metrics = c("roc_auc")
+    ) %>%
+  # fit the candidates with nonzero stacking coefficients
+  fit_members()
+mimic_model_st
+```
+
+
+```{r}
+autoplot(mimic_model_st)
+```
+
+```{r}
+autoplot(mimic_model_st, type = "members")
+autoplot(mimic_model_st, type = "weights")
+
+```
+
+```{r}
+collect_parameters(mimic_model_st, "gb_res")
+```
+
+```{r}
+mimic_pred <- mimic_test %>%
+  bind_cols(predict(mimic_model_st, ., type = "prob")) %>%
+  print(width = Inf)
+```
+
+The code below would compute the area under ROC curve and accuracy.
+```{r}
+yardstick::roc_auc(
+  mimic_pred,
+  truth = los_long,
+  contains(".pred_FALSE")
+  )
+```
+
+
+```{r}
+mimic_pred <-
+  mimic_test %>%
+  select(los_long) %>%
+  bind_cols(
+    predict(
+      mimic_model_st,
+      mimic_test,
+      type = "class",
+      members = TRUE
+      )
+    ) %>%
+  print(width = Inf)
+```
+
+```{r}
+map(
+  colnames(mimic_pred),
+  ~mean(mimic_pred$los_long == pull(mimic_pred, .x))
+  ) %>%
+  set_names(colnames(mimic_pred)) %>%
+  as_tibble() %>%
+  pivot_longer(c(everything(), -los_long))
+```
+
+**Answer:** Comparing all four models, random forest has a higher AUC and
+accuracy compared to logistic regression model; the AUC and accuracy of XGBoost
+and model stacking are quite similar, both higher than logistic regression model
+and random forest model. A higher AUC could be a good indicator of a better model, 
+the accuracies would show us the proportion of times the model made the correct 
+prediction. In terms of interpretability, logistic regression is generally more 
+interpretable than other models since its coefficients can be directly linked
+to odds of outcome.
+
+```{r}
+# logistic regression
+logit_model <- glm(los_long ~ ., data=mimic_other, family=binomial)
+
+logit_importance <- abs(coef(logit_model))
+logit_importance <- logit_importance / sum(logit_importance)
+logit_importance <- data.frame(Feature=names(logit_importance), 
+                               Importance=logit_importance)
+logit_importance
+
+```
+
+**Answer:** Based on the tables above, first careunit, are the most important feature
+in predicting the long ICU stay, especially those stay in MICU and SICU. 
+
