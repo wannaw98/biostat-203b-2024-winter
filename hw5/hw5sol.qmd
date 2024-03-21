@@ -30,6 +30,7 @@ library(glmnet)
 library(xgboost)
 library(stacks)
 library(keras)
+library(randomForest)
 
 ```
 
@@ -211,6 +212,8 @@ final_fit_logit %>%
   collect_metrics()
 ```
 
+
+
 **Answer:** 2. Random Forest
 ```{r}
 # Model
@@ -262,6 +265,8 @@ rf_fit
 
 ```
 
+
+
 ```{r}
 rf_fit %>%
   collect_metrics() %>%
@@ -306,6 +311,7 @@ are shown below:
 final_fit_rf %>% 
   collect_metrics()
 ```
+
 
 
 **Answer:** 3. XGBoost
@@ -464,13 +470,19 @@ mimic_model_st <-
   add_candidates(rf_res) %>%
   add_candidates(gb_res) %>%
   blend_predictions(
-    penalty = 10^(-4),
+    penalty = 10^(-1:0),
     metrics = c("roc_auc")
     ) %>%
   # fit the candidates with nonzero stacking coefficients
   fit_members()
 mimic_model_st
 ```
+
+```{r}
+stack_importance(mimic_model_st)
+```
+
+
 
 ```{r}
 autoplot(mimic_model_st)
@@ -483,16 +495,21 @@ autoplot(mimic_model_st, type = "weights")
 ```
 
 ```{r}
+collect_parameters(mimic_model_st, "gb_res")
+```
+
+```{r}
 mimic_pred <- mimic_test %>%
   bind_cols(predict(mimic_model_st, ., type = "prob")) %>%
   print(width = Inf)
 ```
 
+The code below would compute the area under ROC curve and accuracy.
 ```{r}
 yardstick::roc_auc(
   mimic_pred,
   truth = los_long,
-  contains(".pred_TRUE")
+  contains(".pred_FALSE")
   )
 ```
 
@@ -521,3 +538,28 @@ map(
   as_tibble() %>%
   pivot_longer(c(everything(), -los_long))
 ```
+
+**Answer:** Comparing all four models, random forest has a higher AUC and
+accuracy compared to logistic regression model; the AUC and accuracy of XGBoost
+and model stacking are quite similar, both higher than logistic regression model
+and random forest model. A higher AUC could be a good indicator of a better model, 
+the accuracies would show us the proportion of times the model made the correct 
+prediction. In terms of interpretability, logistic regression is generally more 
+interpretable than other models since its coefficients can be directly linked
+to odds of outcome.
+
+```{r}
+# logistic regression
+logit_model <- glm(los_long ~ ., data=mimic_other, family=binomial)
+
+logit_importance <- abs(coef(logit_model))
+logit_importance <- logit_importance / sum(logit_importance)
+logit_importance <- data.frame(Feature=names(logit_importance), 
+                               Importance=logit_importance)
+logit_importance
+
+```
+
+**Answer:** Based on the tables above, first careunit, are the most important feature
+in predicting the long ICU stay, especially those stay in MICU and SICU. 
+
